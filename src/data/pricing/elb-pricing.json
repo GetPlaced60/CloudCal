@@ -1,0 +1,10 @@
+{
+  "alb": {
+    "hourlyCharge": 0.0225,
+    "lcuPrice": 0.008
+  },
+  "nlb": {
+    "hourlyCharge": 0.0225,
+    "ncuPrice": 0.006
+  }
+}

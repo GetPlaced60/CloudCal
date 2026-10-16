@@ -1,0 +1,31 @@
+{
+  "requests": {
+    "first1M": 0,
+    "perMillion": 0.5
+  },
+  "notifications": {
+    "http": {
+      "first100K": 0,
+      "perMillion": 0.6
+    },
+    "email": {
+      "first1000": 0,
+      "perNotification": 2e-05
+    },
+    "sms": {
+      "perMessage": 0.00645
+    },
+    "sqs": {
+      "first1M": 0,
+      "perMillion": 0.5
+    },
+    "lambda": {
+      "first1M": 0,
+      "perMillion": 0.5
+    }
+  },
+  "dataTransfer": {
+    "first1GB": 0,
+    "perGB": 0.09
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "vpc": 0,
+  "igw": 0,
+  "interfaceEndpoint": {
+    "hourlyCharge": 0.01,
+    "dataProcessedPerGB": 0.01
+  },
+  "gatewayEndpoint": 0,
+  "vpcPeering": {
+    "dataTransferPerGB": 0.01
+  },
+  "elasticIP": {
+    "attached": 0.005,
+    "unattached": 0.005,
+    "remap": 0.1
+  }
+}

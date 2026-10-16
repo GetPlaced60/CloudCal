@@ -1,0 +1,44 @@
+{
+  "region": "us-east-1",
+  "volumeTypes": {
+    "gp3": {
+      "name": "General Purpose SSD (gp3)",
+      "pricePerGB": 0.08,
+      "baseIOPS": 3000,
+      "baseThroughput": 125,
+      "additionalIOPSPrice": 0.005,
+      "additionalThroughputPrice": 0.04,
+      "maxIOPS": 16000,
+      "maxThroughput": 1000
+    },
+    "gp2": {
+      "name": "General Purpose SSD (gp2)",
+      "pricePerGB": 0.1,
+      "baseIOPS": 100,
+      "maxIOPS": 16000
+    },
+    "io1": {
+      "name": "Provisioned IOPS SSD (io1)",
+      "pricePerGB": 0.125,
+      "pricePerIOPS": 0.065,
+      "maxIOPS": 64000
+    },
+    "io2": {
+      "name": "Provisioned IOPS SSD (io2)",
+      "pricePerGB": 0.125,
+      "pricePerIOPS": 0.065,
+      "maxIOPS": 64000
+    },
+    "st1": {
+      "name": "Throughput Optimized HDD (st1)",
+      "pricePerGB": 0.045
+    },
+    "sc1": {
+      "name": "Cold HDD (sc1)",
+      "pricePerGB": 0.015
+    }
+  },
+  "snapshots": {
+    "pricePerGB": 0.05
+  }
+}

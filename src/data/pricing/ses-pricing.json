@@ -1,0 +1,13 @@
+{
+  "sending": {
+    "first62000": 0,
+    "perEmail": 0.0001,
+    "perGBAttachment": 0.12
+  },
+  "receiving": {
+    "first1000": 0,
+    "perEmail": 0.0001,
+    "perChunk256KB": 9e-05
+  },
+  "dedicatedIP": 24.95
+}

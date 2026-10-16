@@ -1,0 +1,41 @@
+{
+  "storage": {
+    "standard": {
+      "first50TB": 0.023,
+      "next450TB": 0.022,
+      "over500TB": 0.021
+    },
+    "intelligentTiering": {
+      "frequent": 0.023,
+      "infrequent": 0.0125,
+      "archive": 0.004
+    },
+    "standardIA": 0.0125,
+    "glacier": 0.004,
+    "glacierDeepArchive": 0.00099
+  },
+  "requests": {
+    "standard": {
+      "put": 0.005,
+      "get": 0.0004
+    },
+    "standardIA": {
+      "put": 0.01,
+      "get": 0.001
+    },
+    "glacier": {
+      "put": 0.03,
+      "get": 0.0004
+    },
+    "glacierDeepArchive": {
+      "put": 0.05,
+      "get": 0.0004
+    }
+  },
+  "dataTransferOut": {
+    "first10TB": 0.09,
+    "next40TB": 0.085,
+    "next100TB": 0.07,
+    "over150TB": 0.05
+  }
+}

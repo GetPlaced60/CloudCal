@@ -1,0 +1,14 @@
+{
+  "dataTransferOut": {
+    "first10TB": 0.085,
+    "next40TB": 0.08,
+    "next100TB": 0.06,
+    "next350TB": 0.04,
+    "next524TB": 0.03,
+    "over1PB": 0.025
+  },
+  "requests": {
+    "http": 0.0075,
+    "https": 0.01
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "hostedZone": {
+    "first25": 0.5,
+    "additional": 0.1
+  },
+  "queries": {
+    "standard": 0.4,
+    "latencyBased": 0.6,
+    "geo": 0.7
+  },
+  "healthChecks": {
+    "basic": 0.5,
+    "https": 0.75,
+    "stringMatching": 1.0
+  },
+  "domainRegistration": {
+    ".com": 13.0,
+    ".net": 11.0,
+    ".org": 12.0,
+    ".io": 39.0,
+    ".co": 25.0,
+    ".dev": 12.0
+  }
+}

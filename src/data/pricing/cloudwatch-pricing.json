@@ -1,0 +1,26 @@
+{
+  "metrics": {
+    "first10000": 0.3,
+    "next240000": 0.1,
+    "next750000": 0.05,
+    "over1000000": 0.02
+  },
+  "alarms": {
+    "standard": 0.1,
+    "highResolution": 0.3,
+    "anomalyDetection": 3.0,
+    "composite": 0.5
+  },
+  "logs": {
+    "ingestion": 0.5,
+    "storage": 0.03,
+    "analysis": 0.005
+  },
+  "dashboards": {
+    "perMonth": 3.0
+  },
+  "apiRequests": {
+    "getMetricData": 0.01,
+    "other": 0.01
+  }
+}
