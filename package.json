@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update-pricing": "node scripts/fetch-aws-pricing.mjs"
   },
   "dependencies": {
     "html2canvas": "^1.4.1",
@@ -18,6 +19,7 @@
     "recharts": "^3.10.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-pricing": "^3.1152.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

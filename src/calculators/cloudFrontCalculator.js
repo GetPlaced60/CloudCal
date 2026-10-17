@@ -1,4 +1,4 @@
-import pricing from '../data/pricing/cloudfront-pricing.json';
+import pricing from '../data/pricing/cloudfront-pricing.json' with { type: 'json' };
 
 export function calculateCloudFrontCost(config) {
   const {

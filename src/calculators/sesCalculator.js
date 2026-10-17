@@ -1,4 +1,4 @@
-import pricing from '../data/pricing/ses-pricing.json';
+import pricing from '../data/pricing/ses-pricing.json' with { type: 'json' };
 
 export function calculateSESCost(config) {
   const {

@@ -1,4 +1,4 @@
-import pricing from '../data/pricing/sns-pricing.json';
+import pricing from '../data/pricing/sns-pricing.json' with { type: 'json' };
 
 export function calculateSNSCost(config) {
   const {

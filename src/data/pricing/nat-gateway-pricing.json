@@ -1,4 +1,15 @@
 {
+  "regional": {
+    "us-east-1": { "hourlyCharge": 0.045, "dataProcessedPerGB": 0.045 },
+    "us-east-2": { "hourlyCharge": 0.045, "dataProcessedPerGB": 0.045 },
+    "us-west-2": { "hourlyCharge": 0.045, "dataProcessedPerGB": 0.045 },
+    "eu-west-1": { "hourlyCharge": 0.048, "dataProcessedPerGB": 0.048 },
+    "eu-central-1": { "hourlyCharge": 0.052, "dataProcessedPerGB": 0.052 },
+    "ap-south-1": { "hourlyCharge": 0.056, "dataProcessedPerGB": 0.056 },
+    "ap-southeast-1": { "hourlyCharge": 0.059, "dataProcessedPerGB": 0.059 },
+    "ap-northeast-1": { "hourlyCharge": 0.062, "dataProcessedPerGB": 0.062 },
+    "sa-east-1": { "hourlyCharge": 0.093, "dataProcessedPerGB": 0.093 }
+  },
   "hourlyCharge": 0.045,
   "dataProcessedPerGB": 0.045,
   "hoursPerMonth": 730

@@ -23,8 +23,8 @@ export default function CostChart({ data = [] }) {
   return (
     <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-semibold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-          <span>📊</span> Cost Distribution
+        <h3 className="font-semibold text-white text-xs uppercase tracking-wider">
+          Cost Distribution
         </h3>
         <div className="flex gap-1 bg-slate-800/80 rounded-lg p-0.5 border border-slate-700">
           <button

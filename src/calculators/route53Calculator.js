@@ -1,4 +1,4 @@
-import pricing from '../data/pricing/route53-pricing.json';
+import pricing from '../data/pricing/route53-pricing.json' with { type: 'json' };
 
 export function calculateRoute53Cost(config) {
   const {

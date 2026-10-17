@@ -1,17 +1,68 @@
 {
+  "regionalStorage": {
+    "us-east-1": {
+      "standard": { "first50TB": 0.023, "next450TB": 0.022, "over500TB": 0.021 },
+      "standardIA": 0.0125,
+      "glacier": 0.0036,
+      "glacierDeepArchive": 0.00099
+    },
+    "us-east-2": {
+      "standard": { "first50TB": 0.023, "next450TB": 0.022, "over500TB": 0.021 },
+      "standardIA": 0.0125,
+      "glacier": 0.0036,
+      "glacierDeepArchive": 0.00099
+    },
+    "us-west-2": {
+      "standard": { "first50TB": 0.023, "next450TB": 0.022, "over500TB": 0.021 },
+      "standardIA": 0.0125,
+      "glacier": 0.0036,
+      "glacierDeepArchive": 0.00099
+    },
+    "eu-west-1": {
+      "standard": { "first50TB": 0.023, "next450TB": 0.022, "over500TB": 0.021 },
+      "standardIA": 0.0125,
+      "glacier": 0.0036,
+      "glacierDeepArchive": 0.00099
+    },
+    "eu-central-1": {
+      "standard": { "first50TB": 0.0245, "next450TB": 0.0235, "over500TB": 0.0225 },
+      "standardIA": 0.0135,
+      "glacier": 0.00405,
+      "glacierDeepArchive": 0.0018
+    },
+    "ap-south-1": {
+      "standard": { "first50TB": 0.025, "next450TB": 0.024, "over500TB": 0.023 },
+      "standardIA": 0.0138,
+      "glacier": 0.0045,
+      "glacierDeepArchive": 0.002
+    },
+    "ap-southeast-1": {
+      "standard": { "first50TB": 0.025, "next450TB": 0.024, "over500TB": 0.023 },
+      "standardIA": 0.0138,
+      "glacier": 0.0045,
+      "glacierDeepArchive": 0.002
+    },
+    "ap-northeast-1": {
+      "standard": { "first50TB": 0.025, "next450TB": 0.024, "over500TB": 0.023 },
+      "standardIA": 0.0138,
+      "glacier": 0.0045,
+      "glacierDeepArchive": 0.002
+    },
+    "sa-east-1": {
+      "standard": { "first50TB": 0.0405, "next450TB": 0.0385, "over500TB": 0.0365 },
+      "standardIA": 0.0221,
+      "glacier": 0.00765,
+      "glacierDeepArchive": 0.0032
+    }
+  },
   "storage": {
     "standard": {
       "first50TB": 0.023,
       "next450TB": 0.022,
       "over500TB": 0.021
     },
-    "intelligentTiering": {
-      "frequent": 0.023,
-      "infrequent": 0.0125,
-      "archive": 0.004
-    },
     "standardIA": 0.0125,
-    "glacier": 0.004,
+    "glacier": 0.0036,
     "glacierDeepArchive": 0.00099
   },
   "requests": {
@@ -33,6 +84,7 @@
     }
   },
   "dataTransferOut": {
+    "freeTierGB": 100,
     "first10TB": 0.09,
     "next40TB": 0.085,
     "next100TB": 0.07,

@@ -1,16 +1,18 @@
-import pricing from '../data/pricing/vpc-pricing.json';
+import pricing from '../data/pricing/vpc-pricing.json' with { type: 'json' };
 
-export function calculateVPCCost(config) {
+export function calculateVPCCost(config, region = 'us-east-1') {
+  const targetRegion = region || config.region || 'us-east-1';
   const {
     interfaceEndpoints = 0,
     interfaceEndpointDataGB = 0,
-    gatewayEndpoints = 0,
+    gatewayEndpoints: _gatewayEndpoints = 0,
     vpcPeeringDataGB = 0,
     elasticIPs = 0,
     hoursPerMonth = 730
   } = config;
 
-  const endpointHourlyCost = (interfaceEndpoints || 0) * (hoursPerMonth || 730) * pricing.interfaceEndpoint.hourlyCharge;
+  const endpointHourlyRate = pricing.regional?.[targetRegion]?.interfaceEndpointHourly ?? pricing.interfaceEndpoint.hourlyCharge;
+  const endpointHourlyCost = (interfaceEndpoints || 0) * (hoursPerMonth || 730) * endpointHourlyRate;
   const endpointDataCost = (interfaceEndpointDataGB || 0) * pricing.interfaceEndpoint.dataProcessedPerGB;
   const peeringCost = (vpcPeeringDataGB || 0) * pricing.vpcPeering.dataTransferPerGB;
   const eipCost = (elasticIPs || 0) * pricing.elasticIP.attached * (hoursPerMonth || 730);

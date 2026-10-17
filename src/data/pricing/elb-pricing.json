@@ -1,4 +1,42 @@
 {
+  "regional": {
+    "us-east-1": {
+      "alb": { "hourlyCharge": 0.0225, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0225, "ncuPrice": 0.006 }
+    },
+    "us-east-2": {
+      "alb": { "hourlyCharge": 0.0225, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0225, "ncuPrice": 0.006 }
+    },
+    "us-west-2": {
+      "alb": { "hourlyCharge": 0.0225, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0225, "ncuPrice": 0.006 }
+    },
+    "eu-west-1": {
+      "alb": { "hourlyCharge": 0.0252, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0252, "ncuPrice": 0.006 }
+    },
+    "eu-central-1": {
+      "alb": { "hourlyCharge": 0.027, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.027, "ncuPrice": 0.006 }
+    },
+    "ap-south-1": {
+      "alb": { "hourlyCharge": 0.0239, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0239, "ncuPrice": 0.006 }
+    },
+    "ap-southeast-1": {
+      "alb": { "hourlyCharge": 0.0252, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0252, "ncuPrice": 0.006 }
+    },
+    "ap-northeast-1": {
+      "alb": { "hourlyCharge": 0.0243, "lcuPrice": 0.008 },
+      "nlb": { "hourlyCharge": 0.0243, "ncuPrice": 0.006 }
+    },
+    "sa-east-1": {
+      "alb": { "hourlyCharge": 0.034, "lcuPrice": 0.011 },
+      "nlb": { "hourlyCharge": 0.034, "ncuPrice": 0.00825 }
+    }
+  },
   "alb": {
     "hourlyCharge": 0.0225,
     "lcuPrice": 0.008

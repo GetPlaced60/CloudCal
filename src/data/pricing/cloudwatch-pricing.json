@@ -1,4 +1,15 @@
 {
+  "regional": {
+    "us-east-1": { "logIngestion": 0.50, "alarmStandard": 0.10 },
+    "us-east-2": { "logIngestion": 0.50, "alarmStandard": 0.10 },
+    "us-west-2": { "logIngestion": 0.50, "alarmStandard": 0.10 },
+    "eu-west-1": { "logIngestion": 0.57, "alarmStandard": 0.10 },
+    "eu-central-1": { "logIngestion": 0.57, "alarmStandard": 0.10 },
+    "ap-south-1": { "logIngestion": 0.67, "alarmStandard": 0.10 },
+    "ap-southeast-1": { "logIngestion": 0.67, "alarmStandard": 0.10 },
+    "ap-northeast-1": { "logIngestion": 0.76, "alarmStandard": 0.10 },
+    "sa-east-1": { "logIngestion": 0.75, "alarmStandard": 0.135 }
+  },
   "metrics": {
     "first10000": 0.3,
     "next240000": 0.1,

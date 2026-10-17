@@ -1,6 +1,7 @@
-import pricing from '../data/pricing/s3-pricing.json';
+import pricing from '../data/pricing/s3-pricing.json' with { type: 'json' };
 
-export function calculateS3Cost(config) {
+export function calculateS3Cost(config, region = 'us-east-1') {
+  const targetRegion = region || config.region || 'us-east-1';
   const {
     storageGB = 100,
     storageClass = 'standard',
@@ -9,10 +10,12 @@ export function calculateS3Cost(config) {
     dataTransferOutGB = 10
   } = config;
 
+  const regStorage = pricing.regionalStorage?.[targetRegion] || pricing.storage;
   let storageCost = 0;
   const gb = storageGB || 0;
+
   if (storageClass === 'standard') {
-    const p = pricing.storage.standard;
+    const p = regStorage.standard || pricing.storage.standard;
     if (gb <= 51200) {
       storageCost = gb * p.first50TB;
     } else if (gb <= 512000) {
@@ -21,20 +24,25 @@ export function calculateS3Cost(config) {
       storageCost = 51200 * p.first50TB + 460800 * p.next450TB + (gb - 512000) * p.over500TB;
     }
   } else if (storageClass === 'standardIA') {
-    storageCost = gb * pricing.storage.standardIA;
+    const rate = regStorage.standardIA ?? pricing.storage.standardIA;
+    storageCost = gb * rate;
   } else if (storageClass === 'glacier') {
-    storageCost = gb * pricing.storage.glacier;
+    const rate = regStorage.glacier ?? pricing.storage.glacier;
+    storageCost = gb * rate;
   } else if (storageClass === 'glacierDeepArchive') {
-    storageCost = gb * pricing.storage.glacierDeepArchive;
+    const rate = regStorage.glacierDeepArchive ?? pricing.storage.glacierDeepArchive;
+    storageCost = gb * rate;
   }
 
   const requestPricing = pricing.requests[storageClass] || pricing.requests.standard;
-  const putCost = ((putRequests || 0)) * requestPricing.put;
-  const getCost = ((getRequests || 0)) * requestPricing.get;
+  // putRequests and getRequests are input in thousands
+  const putCost = (putRequests || 0) * requestPricing.put;
+  const getCost = (getRequests || 0) * requestPricing.get;
 
   let dtCost = 0;
-  if ((dataTransferOutGB || 0) > 1) {
-    const billable = dataTransferOutGB - 1;
+  const freeTier = pricing.dataTransferOut.freeTierGB ?? 100;
+  if ((dataTransferOutGB || 0) > freeTier) {
+    const billable = dataTransferOutGB - freeTier;
     if (billable <= 10240) {
       dtCost = billable * pricing.dataTransferOut.first10TB;
     } else {

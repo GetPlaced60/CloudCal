@@ -1,6 +1,7 @@
-import pricing from '../data/pricing/cloudwatch-pricing.json';
+import pricing from '../data/pricing/cloudwatch-pricing.json' with { type: 'json' };
 
-export function calculateCloudWatchCost(config) {
+export function calculateCloudWatchCost(config, region = 'us-east-1') {
+  const targetRegion = region || config.region || 'us-east-1';
   const {
     customMetrics = 10,
     alarms = 5,
@@ -10,6 +11,8 @@ export function calculateCloudWatchCost(config) {
     dashboards = 1,
     apiRequests = 10000
   } = config;
+
+  const regPricing = pricing.regional?.[targetRegion];
 
   let metricsCost = 0;
   const billableMetrics = Math.max(0, (customMetrics || 0) - 10);
@@ -24,10 +27,14 @@ export function calculateCloudWatchCost(config) {
   }
 
   const billableAlarms = Math.max(0, (alarms || 0) - 10);
-  const alarmRate = pricing.alarms[alarmType] || pricing.alarms.standard;
+  let alarmRate = pricing.alarms[alarmType] || pricing.alarms.standard;
+  if (alarmType === 'standard' && regPricing?.alarmStandard) {
+    alarmRate = regPricing.alarmStandard;
+  }
   const alarmsCost = billableAlarms * alarmRate;
 
-  const logIngestionCost = (logIngestionGB || 0) * pricing.logs.ingestion;
+  const logIngestionRate = regPricing?.logIngestion ?? pricing.logs.ingestion;
+  const logIngestionCost = (logIngestionGB || 0) * logIngestionRate;
   const logStorageCost = (logStorageGB || 0) * pricing.logs.storage;
 
   const billableDashboards = Math.max(0, (dashboards || 0) - 3);

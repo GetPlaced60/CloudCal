@@ -1,6 +1,7 @@
-import pricing from '../data/pricing/elb-pricing.json';
+import pricing from '../data/pricing/elb-pricing.json' with { type: 'json' };
 
-export function calculateELBCost(config) {
+export function calculateELBCost(config, region = 'us-east-1') {
+  const targetRegion = region || config.region || 'us-east-1';
   const {
     type = 'alb',
     count = 1,
@@ -8,8 +9,11 @@ export function calculateELBCost(config) {
     hoursPerMonth = 730
   } = config;
 
-  const hourlyRate = type === 'alb' ? pricing.alb.hourlyCharge : pricing.nlb.hourlyCharge;
-  const unitRate = type === 'alb' ? pricing.alb.lcuPrice : pricing.nlb.ncuPrice;
+  const regPricing = pricing.regional?.[targetRegion] || pricing;
+  const rates = type === 'alb' ? regPricing.alb : regPricing.nlb;
+
+  const hourlyRate = rates?.hourlyCharge ?? 0.0225;
+  const unitRate = type === 'alb' ? (rates?.lcuPrice ?? 0.008) : (rates?.ncuPrice ?? 0.006);
 
   const baseCost = (count || 0) * hourlyRate * (hoursPerMonth || 730);
   const capacityCost = (count || 0) * (lcus || 0) * unitRate * (hoursPerMonth || 730);

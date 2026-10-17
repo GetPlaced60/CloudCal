@@ -12,45 +12,90 @@ import { calculateCloudWatchCost } from '../../calculators/cloudWatchCalculator'
 import { calculateELBCost } from '../../calculators/elbCalculator';
 import { formatCurrency } from '../../utils/formatCurrency';
 import CostChart from './CostChart';
+import {
+  Globe,
+  Zap,
+  Lock,
+  DoorOpen,
+  Scale,
+  Server,
+  Archive,
+  Mail,
+  Bell,
+  Activity,
+  Layers
+} from 'lucide-react';
 
 const SERVICE_LABELS = {
-  route53: { name: 'Route 53', icon: '🌐', color: '#3b82f6' },
-  cloudfront: { name: 'CloudFront', icon: '⚡', color: '#a855f7' },
-  vpc: { name: 'VPC / Endpoints', icon: '🔒', color: '#06b6d4' },
-  elb: { name: 'Elastic Load Balancer (ALB)', icon: '⚖️', color: '#0ea5e9' },
-  natGateway: { name: 'NAT Gateway', icon: '🚪', color: '#f59e0b' },
-  ec2Web: { name: 'EC2 Web Tier', icon: '🌍', color: '#10b981' },
-  ec2App: { name: 'EC2 App Tier', icon: '⚙️', color: '#6366f1' },
-  ec2Db: { name: 'EC2 DB Tier', icon: '🗄️', color: '#ec4899' },
-  s3: { name: 'S3 Storage', icon: '📦', color: '#f97316' },
-  ses: { name: 'SES Email', icon: '📧', color: '#14b8a6' },
-  sns: { name: 'SNS Push/Alerts', icon: '🔔', color: '#c084fc' },
-  cloudwatch: { name: 'CloudWatch', icon: '📊', color: '#ef4444' }
+  route53: { name: 'Route 53', icon: Globe, color: '#3b82f6' },
+  cloudfront: { name: 'CloudFront', icon: Zap, color: '#a855f7' },
+  vpc: { name: 'VPC / Endpoints', icon: Lock, color: '#06b6d4' },
+  natGateway: { name: 'NAT Gateway', icon: DoorOpen, color: '#f59e0b' },
+  elb: { name: 'Elastic Load Balancer (ALB)', icon: Scale, color: '#0ea5e9' },
+  ec2: { name: 'EC2 Virtual Servers', icon: Server, color: '#10b981' },
+  s3: { name: 'S3 Storage', icon: Archive, color: '#f97316' },
+  ses: { name: 'SES Email', icon: Mail, color: '#14b8a6' },
+  sns: { name: 'SNS Push/Alerts', icon: Bell, color: '#c084fc' },
+  cloudwatch: { name: 'CloudWatch', icon: Activity, color: '#ef4444' }
 };
 
 export default function CostSummary() {
-  const { config } = useCalculator();
+  const { config, currentRegion } = useCalculator();
 
   const costs = useMemo(() => {
     const results = {};
 
-    if (config.route53.enabled) {
+    if (config.route53?.enabled) {
       results.route53 = calculateRoute53Cost({
         ...config.route53,
         domainRegistrations: Array.from({ length: config.route53.domainCount || 0 }, () => ({ extension: config.route53.domainExtension || '.com' }))
       });
     }
-    if (config.cloudfront.enabled) results.cloudfront = calculateCloudFrontCost(config.cloudfront);
-    if (config.vpc.enabled) results.vpc = calculateVPCCost(config.vpc);
-    if (config.elb?.enabled) results.elb = calculateELBCost(config.elb);
-    if (config.natGateway.enabled) results.natGateway = calculateNATGatewayCost(config.natGateway);
-    if (config.ec2Web.enabled) results.ec2Web = calculateEC2Cost(config.ec2Web);
-    if (config.ec2App.enabled) results.ec2App = calculateEC2Cost(config.ec2App);
-    if (config.ec2Db.enabled) results.ec2Db = calculateEC2Cost(config.ec2Db);
-    if (config.s3.enabled) results.s3 = calculateS3Cost(config.s3);
-    if (config.ses.enabled) results.ses = calculateSESCost(config.ses);
-    if (config.sns.enabled) results.sns = calculateSNSCost(config.sns);
-    if (config.cloudwatch.enabled) results.cloudwatch = calculateCloudWatchCost(config.cloudwatch);
+    if (config.cloudfront?.enabled) results.cloudfront = calculateCloudFrontCost(config.cloudfront);
+    if (config.vpc?.enabled) results.vpc = calculateVPCCost(config.vpc, config.region);
+    if (config.natGateway?.enabled) results.natGateway = calculateNATGatewayCost(config.natGateway, config.region);
+    if (config.elb?.enabled) results.elb = calculateELBCost(config.elb, config.region);
+
+    // Multi-instance EC2 calculation
+    if (config.ec2?.enabled && config.ec2?.instances) {
+      let ec2Total = 0;
+      let computeTotal = 0;
+      let ebsTotal = 0;
+      let eipTotal = 0;
+      let dtTotal = 0;
+      const serverDetails = [];
+
+      config.ec2.instances.forEach(inst => {
+        if (inst.enabled) {
+          const res = calculateEC2Cost(inst, config.region);
+          ec2Total += res.total;
+          computeTotal += res.breakdown.compute;
+          ebsTotal += res.breakdown.ebs;
+          eipTotal += res.breakdown.elasticIP;
+          dtTotal += res.breakdown.dataTransfer;
+          serverDetails.push({
+            ...inst,
+            cost: res
+          });
+        }
+      });
+
+      results.ec2 = {
+        total: Math.round(ec2Total * 100) / 100,
+        breakdown: {
+          compute: Math.round(computeTotal * 100) / 100,
+          ebs: Math.round(ebsTotal * 100) / 100,
+          elasticIP: Math.round(eipTotal * 100) / 100,
+          dataTransfer: Math.round(dtTotal * 100) / 100
+        },
+        serverDetails
+      };
+    }
+
+    if (config.s3?.enabled) results.s3 = calculateS3Cost(config.s3, config.region);
+    if (config.ses?.enabled) results.ses = calculateSESCost(config.ses);
+    if (config.sns?.enabled) results.sns = calculateSNSCost(config.sns);
+    if (config.cloudwatch?.enabled) results.cloudwatch = calculateCloudWatchCost(config.cloudwatch, config.region);
 
     return results;
   }, [config]);
@@ -68,8 +113,21 @@ export default function CostSummary() {
     }))
     .sort((a, b) => b.value - a.value);
 
+  const ec2Servers = costs.ec2?.serverDetails || [];
+
   return (
     <div className="space-y-4">
+      {/* Region Indicator */}
+      <div className="flex items-center justify-between bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+        <span className="text-slate-400">Target Region:</span>
+        <span className="text-white font-medium flex items-center gap-1.5">
+          <span>{currentRegion.name}</span>
+          <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800 font-mono font-medium">
+            Official AWS Rates
+          </span>
+        </span>
+      </div>
+
       {/* Total Cost Cards */}
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/40 rounded-xl p-3 text-center">
@@ -92,21 +150,27 @@ export default function CostSummary() {
       {/* Service Breakdown List */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
         <div className="px-4 py-2.5 border-b border-slate-800 bg-slate-900/90 flex justify-between items-center">
-          <h3 className="font-semibold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <span>📋</span> Itemized Monthly Costs
+          <h3 className="font-semibold text-white text-xs uppercase tracking-wider">
+            Itemized Monthly Costs
           </h3>
           <span className="text-xs text-slate-400 font-mono">{Object.keys(costs).length} active</span>
         </div>
         <div className="divide-y divide-slate-800/60 max-h-96 overflow-y-auto">
-          {Object.entries(costs).map(([key, result]) => {
-            if (!result) return null;
-            const label = SERVICE_LABELS[key];
-            const percentage = totalMonthly > 0 ? ((result.total / totalMonthly) * 100).toFixed(1) : 0;
-            return (
+          {Object.keys(costs).length === 0 ? (
+            <div className="px-4 py-8 text-center text-xs text-slate-500">
+              No services added yet. Select a service to begin calculating costs.
+            </div>
+          ) : (
+            Object.entries(costs).map(([key, result]) => {
+              if (!result) return null;
+              const label = SERVICE_LABELS[key];
+              const Icon = label?.icon || Layers;
+              const percentage = totalMonthly > 0 ? ((result.total / totalMonthly) * 100).toFixed(1) : 0;
+              return (
               <div key={key} className="px-4 py-2.5 hover:bg-slate-800/40 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span>{label?.icon}</span>
+                    <Icon size={14} className="text-slate-400" />
                     <span className="text-xs font-semibold text-white">{label?.name || key}</span>
                   </div>
                   <div className="text-right">
@@ -127,7 +191,7 @@ export default function CostSummary() {
                 )}
               </div>
             );
-          })}
+          }))}
         </div>
         <div className="px-4 py-3 border-t border-slate-800 bg-slate-900 flex justify-between items-center">
           <span className="text-xs font-semibold uppercase text-slate-300 tracking-wider">Total Monthly</span>
@@ -135,37 +199,34 @@ export default function CostSummary() {
         </div>
       </div>
 
-      {/* EC2 + EBS Detailed Breakdown */}
-      {(costs.ec2Web || costs.ec2App || costs.ec2Db) && (
+      {/* EC2 Server-by-Server Itemized Breakdown */}
+      {ec2Servers.length > 0 && (
         <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-          <div className="px-4 py-2.5 border-b border-slate-800 bg-slate-900/90">
-            <h3 className="font-semibold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
-              <span>🖥️</span> EC2 & EBS Dedicated Breakdown
+          <div className="px-4 py-2.5 border-b border-slate-800 bg-slate-900/90 flex justify-between items-center">
+            <h3 className="font-semibold text-white text-xs uppercase tracking-wider">
+              EC2 Server Groups Breakdown
             </h3>
+            <span className="text-[10px] text-slate-400 font-mono">{ec2Servers.length} Servers</span>
           </div>
-          <div className="divide-y divide-slate-800/60 p-3 space-y-3">
-            {[
-              ['ec2Web', 'Web Tier', config.ec2Web],
-              ['ec2App', 'Application Tier', config.ec2App],
-              ['ec2Db', 'Database Tier', config.ec2Db]
-            ].map(([key, title, tierCfg]) => {
-              const res = costs[key];
-              if (!res || !tierCfg.enabled) return null;
+          <div className="divide-y divide-slate-800/60 p-3 space-y-2.5">
+            {ec2Servers.map((srv) => {
+              const res = srv.cost;
+              const scaledTotal = res.total;
               return (
-                <div key={key} className="bg-slate-950/50 rounded-lg p-2.5 border border-slate-800">
+                <div key={srv.id} className="bg-slate-950/50 rounded-lg p-2.5 border border-slate-800">
                   <div className="flex justify-between items-center mb-1.5">
                     <div>
-                      <span className="text-xs font-bold text-white">{title}</span>
+                      <span className="text-xs font-bold text-white">{srv.name}</span>
                       <span className="text-[11px] text-slate-400 ml-2">
-                        ({tierCfg.count}x {tierCfg.instanceType} • {res.details?.pricingModel})
+                        ({srv.count}x {srv.instanceType} • {srv.pricingModel})
                       </span>
                     </div>
-                    <span className="text-xs font-bold text-emerald-400">{formatCurrency(res.total)}/mo</span>
+                    <span className="text-xs font-bold text-emerald-400">{formatCurrency(scaledTotal)}/mo</span>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 text-[10px]">
                     <div className="bg-slate-900 p-1.5 rounded border border-slate-800">
                       <span className="text-slate-400 block">Compute:</span>
-                      <span className="font-bold text-white">{formatCurrency(res.breakdown.compute)}</span>
+                      <span className="font-bold text-white">{formatCurrency(res.breakdown?.compute)}</span>
                     </div>
                     <div className="bg-slate-900 p-1.5 rounded border border-slate-800">
                       <span className="text-slate-400 block">EBS Volume:</span>
@@ -181,9 +242,8 @@ export default function CostSummary() {
                     </div>
                   </div>
                   {res.details?.savingsVsOnDemand > 0 && (
-                    <div className="mt-1.5 text-[10px] text-emerald-400 flex items-center gap-1">
-                      <span>🎉</span>
-                      <span>Saving <strong>{res.details.savingsVsOnDemand}%</strong> vs On-Demand pricing</span>
+                    <div className="mt-1.5 text-[10px] text-emerald-400 flex items-center gap-1 font-medium">
+                      <span>Savings vs On-Demand: <strong>{res.details.savingsVsOnDemand}%</strong></span>
                     </div>
                   )}
                 </div>
