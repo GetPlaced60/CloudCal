@@ -58,11 +58,11 @@ export default function Header({ onOpenComparison, onOpenAddService }) {
     };
 
     if (config.route53?.enabled) {
-      const c = calculateRoute53Cost({ ...config.route53, domainRegistrations: Array.from({ length: config.route53.domainCount || 0 }, () => ({ extension: config.route53.domainExtension || '.com' })) });
+      const c = calculateRoute53Cost(config.route53);
       addRow('Route 53', 'Active', `${config.route53.hostedZones} zones`, c.total);
     }
     if (config.cloudfront?.enabled) {
-      const c = calculateCloudFrontCost(config.cloudfront);
+      const c = calculateCloudFrontCost(config.cloudfront, config.region);
       addRow('CloudFront', 'Active', `${config.cloudfront.dataTransferOutGB} GB egress`, c.total);
     }
     if (config.vpc?.enabled) {
@@ -159,11 +159,11 @@ export default function Header({ onOpenComparison, onOpenAddService }) {
     };
 
     if (config.route53?.enabled) {
-      const c = calculateRoute53Cost({ ...config.route53, domainRegistrations: Array.from({ length: config.route53.domainCount || 0 }, () => ({ extension: config.route53.domainExtension || '.com' })) });
+      const c = calculateRoute53Cost(config.route53);
       addItem('Route 53', `${config.route53.hostedZones} zones`, c.total);
     }
     if (config.cloudfront?.enabled) {
-      const c = calculateCloudFrontCost(config.cloudfront);
+      const c = calculateCloudFrontCost(config.cloudfront, config.region);
       addItem('CloudFront', `${config.cloudfront.dataTransferOutGB} GB egress`, c.total);
     }
     if (config.vpc?.enabled) {

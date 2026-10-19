@@ -7,27 +7,35 @@ export function calculateRoute53Cost(config) {
     queryType = 'standard',
     healthChecks = 0,
     healthCheckType = 'basic',
-    domainRegistrations = []
+    domainRegistrations = [],
+    domainCount = 0,
+    domainExtension = '.com'
   } = config;
 
   let hostedZoneCost = 0;
-  if (hostedZones <= 25) {
-    hostedZoneCost = hostedZones * pricing.hostedZone.first25;
+  const numZones = Math.max(0, hostedZones || 0);
+  if (numZones <= 25) {
+    hostedZoneCost = numZones * pricing.hostedZone.first25;
   } else {
-    hostedZoneCost = 25 * pricing.hostedZone.first25 + (hostedZones - 25) * pricing.hostedZone.additional;
+    hostedZoneCost = 25 * pricing.hostedZone.first25 + (numZones - 25) * pricing.hostedZone.additional;
   }
 
   const queryRate = pricing.queries[queryType] || pricing.queries.standard;
-  const queriesCost = (queriesPerMonth || 0) * queryRate;
+  const queriesCost = (Math.max(0, queriesPerMonth || 0)) * queryRate;
 
   const healthCheckRate = pricing.healthChecks[healthCheckType] || pricing.healthChecks.basic;
-  const healthCheckCost = (healthChecks || 0) * healthCheckRate;
+  const healthCheckCost = (Math.max(0, healthChecks || 0)) * healthCheckRate;
 
   let domainCost = 0;
-  (domainRegistrations || []).forEach(domain => {
-    const ext = domain?.extension || '.com';
-    domainCost += (pricing.domainRegistration[ext] || 13) / 12;
-  });
+  if (domainCount && domainCount > 0) {
+    const ext = domainExtension || '.com';
+    domainCost = (domainCount * (pricing.domainRegistration[ext] || 13)) / 12;
+  } else if (domainRegistrations && domainRegistrations.length > 0) {
+    domainRegistrations.forEach(domain => {
+      const ext = domain?.extension || '.com';
+      domainCost += (pricing.domainRegistration[ext] || 13) / 12;
+    });
+  }
 
   const total = hostedZoneCost + queriesCost + healthCheckCost + domainCost;
 

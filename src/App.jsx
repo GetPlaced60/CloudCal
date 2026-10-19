@@ -65,10 +65,6 @@ function Dashboard() {
     return Math.round(sum * 100) / 100;
   };
 
-  const route53Transform = (c) => ({
-    ...c,
-    domainRegistrations: Array.from({ length: c.domainCount || 0 }, () => ({ extension: c.domainExtension || '.com' }))
-  });
 
   const inactiveServices = ALL_SERVICES.filter(s => !config[s.key]?.enabled);
   const activeCount = ALL_SERVICES.filter(s => config[s.key]?.enabled).length;
@@ -154,7 +150,7 @@ function Dashboard() {
                 enabled={config.route53.enabled}
                 onToggle={() => toggleService('route53')}
                 onRemove={() => setServiceEnabled('route53', false)}
-                cost={getCost('route53', calculateRoute53Cost, route53Transform)}
+                cost={getCost('route53', calculateRoute53Cost)}
               >
                 <Route53Form />
               </ServiceCard>

@@ -45,13 +45,8 @@ export default function CostSummary() {
   const costs = useMemo(() => {
     const results = {};
 
-    if (config.route53?.enabled) {
-      results.route53 = calculateRoute53Cost({
-        ...config.route53,
-        domainRegistrations: Array.from({ length: config.route53.domainCount || 0 }, () => ({ extension: config.route53.domainExtension || '.com' }))
-      });
-    }
-    if (config.cloudfront?.enabled) results.cloudfront = calculateCloudFrontCost(config.cloudfront);
+    if (config.route53?.enabled) results.route53 = calculateRoute53Cost(config.route53);
+    if (config.cloudfront?.enabled) results.cloudfront = calculateCloudFrontCost(config.cloudfront, config.region);
     if (config.vpc?.enabled) results.vpc = calculateVPCCost(config.vpc, config.region);
     if (config.natGateway?.enabled) results.natGateway = calculateNATGatewayCost(config.natGateway, config.region);
     if (config.elb?.enabled) results.elb = calculateELBCost(config.elb, config.region);

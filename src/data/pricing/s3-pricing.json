@@ -55,6 +55,25 @@
       "glacierDeepArchive": 0.0032
     }
   },
+  "regionalEgress": {
+    "us-east-1": 0.09,
+    "us-east-2": 0.09,
+    "us-west-2": 0.09,
+    "eu-west-1": 0.09,
+    "eu-central-1": 0.09,
+    "ap-south-1": 0.1093,
+    "ap-southeast-1": 0.12,
+    "ap-northeast-1": 0.114,
+    "sa-east-1": 0.15
+  },
+  "regionalRequests": {
+    "sa-east-1": {
+      "standard": { "put": 0.007, "get": 0.00056 },
+      "standardIA": { "put": 0.014, "get": 0.0014 },
+      "glacier": { "put": 0.042, "get": 0.00056 },
+      "glacierDeepArchive": { "put": 0.07, "get": 0.00056 }
+    }
+  },
   "storage": {
     "standard": {
       "first50TB": 0.023,

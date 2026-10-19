@@ -237,7 +237,7 @@ export default function EC2Form() {
                         value={inst.dataTransferOut}
                         onChange={(v) => updateEC2Instance(inst.id, { dataTransferOut: v })}
                         unit="GB/mo"
-                        helpText="1GB included free"
+                        helpText="100GB/mo free tier across AWS"
                       />
                       <InputField
                         label="Public / Elastic IPs"

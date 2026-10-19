@@ -1,16 +1,16 @@
 import ec2Pricing from '../data/pricing/ec2-pricing.json' with { type: 'json' };
 import ebsPricing from '../data/pricing/ebs-pricing.json' with { type: 'json' };
 
-const ebsRegionMultipliers = {
-  'us-east-1': 1.0,
-  'us-east-2': 1.0,
-  'us-west-2': 1.0,
-  'eu-west-1': 1.10,
-  'eu-central-1': 1.19,
-  'ap-south-1': 1.14, // gp3 is $0.0912/GB vs $0.08 in us-east-1
-  'ap-southeast-1': 1.20,
-  'ap-northeast-1': 1.20,
-  'sa-east-1': 1.90 // gp3 is $0.152/GB vs $0.08 in us-east-1
+const REGIONAL_EGRESS_RATES = {
+  'us-east-1': 0.09,
+  'us-east-2': 0.09,
+  'us-west-2': 0.09,
+  'eu-west-1': 0.09,
+  'eu-central-1': 0.09,
+  'ap-south-1': 0.1093,
+  'ap-southeast-1': 0.12,
+  'ap-northeast-1': 0.114,
+  'sa-east-1': 0.15
 };
 
 export function calculateEBSCost(config, region = 'us-east-1') {
@@ -23,8 +23,12 @@ export function calculateEBSCost(config, region = 'us-east-1') {
     count = 1
   } = config;
 
+  const regEbs = ebsPricing.regional?.[region];
+  const volPricing = regEbs?.volumeTypes?.[volumeType] || ebsPricing.volumeTypes[volumeType] || ebsPricing.volumeTypes.gp3;
+  const snapshotPrice = regEbs?.snapshots?.pricePerGB ?? ebsPricing.snapshots?.pricePerGB ?? 0.05;
+
   if (!volumeSize || volumeSize <= 0) {
-    const snapshotCost = (snapshots || 0) * ebsPricing.snapshots.pricePerGB;
+    const snapshotCost = (snapshots || 0) * snapshotPrice;
     return {
       total: Math.round(snapshotCost * 100) / 100,
       breakdown: {
@@ -36,25 +40,25 @@ export function calculateEBSCost(config, region = 'us-east-1') {
     };
   }
 
-  const mult = ebsRegionMultipliers[region] || 1.0;
-  const volPricing = ebsPricing.volumeTypes[volumeType] || ebsPricing.volumeTypes.gp3;
-  const pricePerGB = (volPricing.pricePerGB || 0.08) * mult;
-  let storageCost = (volumeSize || 0) * pricePerGB;
+  const pricePerGB = volPricing.pricePerGB || 0.08;
+  const storageCost = (volumeSize || 0) * pricePerGB;
   let iopsCost = 0;
   let throughputCost = 0;
 
   if (volumeType === 'gp3') {
-    if (iops > (volPricing.baseIOPS || 3000)) {
-      iopsCost = (iops - volPricing.baseIOPS) * (volPricing.additionalIOPSPrice || 0.005) * mult;
+    const baseIOPS = volPricing.baseIOPS || 3000;
+    if (iops > baseIOPS) {
+      iopsCost = (iops - baseIOPS) * (volPricing.additionalIOPSPrice || 0.005);
     }
-    if (throughput > (volPricing.baseThroughput || 125)) {
-      throughputCost = (throughput - volPricing.baseThroughput) * (volPricing.additionalThroughputPrice || 0.04) * mult;
+    const baseThroughput = volPricing.baseThroughput || 125;
+    if (throughput > baseThroughput) {
+      throughputCost = (throughput - baseThroughput) * (volPricing.additionalThroughputPrice || 0.04);
     }
   } else if (volumeType === 'io1' || volumeType === 'io2') {
-    iopsCost = (iops || 0) * (volPricing.pricePerIOPS || 0.065) * mult;
+    iopsCost = (iops || 0) * (volPricing.pricePerIOPS || 0.065);
   }
 
-  const snapshotCost = (snapshots || 0) * ebsPricing.snapshots.pricePerGB * mult;
+  const snapshotCost = (snapshots || 0) * snapshotPrice;
   const totalPerVolume = storageCost + iopsCost + throughputCost;
   const total = (totalPerVolume * (count || 1)) + snapshotCost;
 
@@ -128,9 +132,10 @@ export function calculateEC2Cost(config, region = 'us-east-1') {
     } else if (os === 'windows') {
       osSurcharge = vcpuCount * 0.046;
     } else if (os === 'rhel') {
-      osSurcharge = vcpuCount >= 16 ? 0.1728 : (vcpuCount > 4 ? 0.13 : 0.06);
+      // RHEL licensing: 1-4 vCPUs $0.06/hr, 5-16 vCPUs $0.13/hr, >16 vCPUs $0.1728/hr
+      osSurcharge = vcpuCount > 16 ? 0.1728 : (vcpuCount > 4 ? 0.13 : 0.06);
     } else if (os === 'suse') {
-      osSurcharge = vcpuCount >= 16 ? 0.125 : 0.10;
+      osSurcharge = vcpuCount > 4 ? 0.125 : 0.10;
     }
   }
 
@@ -150,9 +155,11 @@ export function calculateEC2Cost(config, region = 'us-east-1') {
 
   const eipCost = (elasticIPs || 0) * 0.005 * (hoursPerMonth || 730);
 
+  // AWS provides 100 GB/month free internet egress per account across services
+  const egressRate = REGIONAL_EGRESS_RATES[targetRegion] || 0.09;
   let dtCost = 0;
-  if (dataTransferOut > 1) {
-    dtCost = (dataTransferOut - 1) * 0.09;
+  if (dataTransferOut > 100) {
+    dtCost = (dataTransferOut - 100) * egressRate;
   }
 
   const total = computeCost + ebsCost.total + eipCost + dtCost;
@@ -167,13 +174,13 @@ export function calculateEC2Cost(config, region = 'us-east-1') {
     },
     ebsBreakdown: ebsCost.breakdown,
     details: {
-      instanceType,
+      instanceType: instanceType || '',
       region: targetRegion,
-      vcpu: instance.vcpu,
-      memory: instance.memory,
+      vcpu: instance?.vcpu || 0,
+      memory: instance?.memory || 0,
       hourlyRate: Math.round(totalHourlyRate * 10000) / 10000,
       pricingModel,
-      savingsVsOnDemand: pricingModel !== 'onDemand'
+      savingsVsOnDemand: (pricingModel !== 'onDemand' && onDemandTotalHourly > 0)
         ? Math.max(0, Math.round((1 - totalHourlyRate / onDemandTotalHourly) * 100))
         : 0
     }

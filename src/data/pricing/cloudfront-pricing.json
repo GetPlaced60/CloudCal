@@ -1,4 +1,42 @@
 {
+  "regional": {
+    "us-east-1": {
+      "dataTransferOut": { "first10TB": 0.085, "next40TB": 0.08, "next100TB": 0.06, "next350TB": 0.04, "next524TB": 0.03, "over1PB": 0.025 },
+      "requests": { "http": 0.0075, "https": 0.01 }
+    },
+    "us-east-2": {
+      "dataTransferOut": { "first10TB": 0.085, "next40TB": 0.08, "next100TB": 0.06, "next350TB": 0.04, "next524TB": 0.03, "over1PB": 0.025 },
+      "requests": { "http": 0.0075, "https": 0.01 }
+    },
+    "us-west-2": {
+      "dataTransferOut": { "first10TB": 0.085, "next40TB": 0.08, "next100TB": 0.06, "next350TB": 0.04, "next524TB": 0.03, "over1PB": 0.025 },
+      "requests": { "http": 0.0075, "https": 0.01 }
+    },
+    "eu-west-1": {
+      "dataTransferOut": { "first10TB": 0.085, "next40TB": 0.08, "next100TB": 0.06, "next350TB": 0.04, "next524TB": 0.03, "over1PB": 0.025 },
+      "requests": { "http": 0.0075, "https": 0.01 }
+    },
+    "eu-central-1": {
+      "dataTransferOut": { "first10TB": 0.085, "next40TB": 0.08, "next100TB": 0.06, "next350TB": 0.04, "next524TB": 0.03, "over1PB": 0.025 },
+      "requests": { "http": 0.0075, "https": 0.01 }
+    },
+    "ap-south-1": {
+      "dataTransferOut": { "first10TB": 0.109, "next40TB": 0.085, "next100TB": 0.082, "next350TB": 0.07, "next524TB": 0.06, "over1PB": 0.05 },
+      "requests": { "http": 0.009, "https": 0.012 }
+    },
+    "ap-southeast-1": {
+      "dataTransferOut": { "first10TB": 0.12, "next40TB": 0.09, "next100TB": 0.085, "next350TB": 0.07, "next524TB": 0.06, "over1PB": 0.05 },
+      "requests": { "http": 0.009, "https": 0.012 }
+    },
+    "ap-northeast-1": {
+      "dataTransferOut": { "first10TB": 0.114, "next40TB": 0.089, "next100TB": 0.086, "next350TB": 0.07, "next524TB": 0.06, "over1PB": 0.05 },
+      "requests": { "http": 0.009, "https": 0.012 }
+    },
+    "sa-east-1": {
+      "dataTransferOut": { "first10TB": 0.11, "next40TB": 0.095, "next100TB": 0.09, "next350TB": 0.08, "next524TB": 0.07, "over1PB": 0.06 },
+      "requests": { "http": 0.016, "https": 0.022 }
+    }
+  },
   "dataTransferOut": {
     "first10TB": 0.085,
     "next40TB": 0.08,
@@ -10,5 +48,10 @@
   "requests": {
     "http": 0.0075,
     "https": 0.01
+  },
+  "freeTier": {
+    "dataTransferOutGB": 1024,
+    "httpRequestsMillions": 10,
+    "httpsRequestsMillions": 10
   }
 }

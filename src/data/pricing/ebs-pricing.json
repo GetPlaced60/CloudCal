@@ -1,5 +1,105 @@
 {
-  "region": "us-east-1",
+  "regional": {
+    "us-east-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.08, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.005, "additionalThroughputPrice": 0.04 },
+        "gp2": { "pricePerGB": 0.10 },
+        "io1": { "pricePerGB": 0.125, "pricePerIOPS": 0.065 },
+        "io2": { "pricePerGB": 0.125, "pricePerIOPS": 0.065 },
+        "st1": { "pricePerGB": 0.045 },
+        "sc1": { "pricePerGB": 0.015 }
+      },
+      "snapshots": { "pricePerGB": 0.05 }
+    },
+    "us-east-2": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.08, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.005, "additionalThroughputPrice": 0.04 },
+        "gp2": { "pricePerGB": 0.10 },
+        "io1": { "pricePerGB": 0.125, "pricePerIOPS": 0.065 },
+        "io2": { "pricePerGB": 0.125, "pricePerIOPS": 0.065 },
+        "st1": { "pricePerGB": 0.045 },
+        "sc1": { "pricePerGB": 0.015 }
+      },
+      "snapshots": { "pricePerGB": 0.05 }
+    },
+    "us-west-2": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.08, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.005, "additionalThroughputPrice": 0.04 },
+        "gp2": { "pricePerGB": 0.10 },
+        "io1": { "pricePerGB": 0.125, "pricePerIOPS": 0.065 },
+        "io2": { "pricePerGB": 0.125, "pricePerIOPS": 0.065 },
+        "st1": { "pricePerGB": 0.045 },
+        "sc1": { "pricePerGB": 0.015 }
+      },
+      "snapshots": { "pricePerGB": 0.05 }
+    },
+    "eu-west-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.088, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.0055, "additionalThroughputPrice": 0.044 },
+        "gp2": { "pricePerGB": 0.11 },
+        "io1": { "pricePerGB": 0.138, "pricePerIOPS": 0.072 },
+        "io2": { "pricePerGB": 0.138, "pricePerIOPS": 0.072 },
+        "st1": { "pricePerGB": 0.05 },
+        "sc1": { "pricePerGB": 0.0165 }
+      },
+      "snapshots": { "pricePerGB": 0.055 }
+    },
+    "eu-central-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.0952, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.00595, "additionalThroughputPrice": 0.0476 },
+        "gp2": { "pricePerGB": 0.119 },
+        "io1": { "pricePerGB": 0.149, "pricePerIOPS": 0.077 },
+        "io2": { "pricePerGB": 0.149, "pricePerIOPS": 0.077 },
+        "st1": { "pricePerGB": 0.054 },
+        "sc1": { "pricePerGB": 0.018 }
+      },
+      "snapshots": { "pricePerGB": 0.054 }
+    },
+    "ap-south-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.0912, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.0057, "additionalThroughputPrice": 0.0456 },
+        "gp2": { "pricePerGB": 0.114 },
+        "io1": { "pricePerGB": 0.1425, "pricePerIOPS": 0.0741 },
+        "io2": { "pricePerGB": 0.1425, "pricePerIOPS": 0.0741 },
+        "st1": { "pricePerGB": 0.0513 },
+        "sc1": { "pricePerGB": 0.0171 }
+      },
+      "snapshots": { "pricePerGB": 0.05 }
+    },
+    "ap-southeast-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.096, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.006, "additionalThroughputPrice": 0.048 },
+        "gp2": { "pricePerGB": 0.12 },
+        "io1": { "pricePerGB": 0.15, "pricePerIOPS": 0.078 },
+        "io2": { "pricePerGB": 0.15, "pricePerIOPS": 0.078 },
+        "st1": { "pricePerGB": 0.054 },
+        "sc1": { "pricePerGB": 0.018 }
+      },
+      "snapshots": { "pricePerGB": 0.055 }
+    },
+    "ap-northeast-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.096, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.006, "additionalThroughputPrice": 0.048 },
+        "gp2": { "pricePerGB": 0.12 },
+        "io1": { "pricePerGB": 0.15, "pricePerIOPS": 0.078 },
+        "io2": { "pricePerGB": 0.15, "pricePerIOPS": 0.078 },
+        "st1": { "pricePerGB": 0.054 },
+        "sc1": { "pricePerGB": 0.018 }
+      },
+      "snapshots": { "pricePerGB": 0.05 }
+    },
+    "sa-east-1": {
+      "volumeTypes": {
+        "gp3": { "pricePerGB": 0.152, "baseIOPS": 3000, "baseThroughput": 125, "additionalIOPSPrice": 0.0095, "additionalThroughputPrice": 0.076 },
+        "gp2": { "pricePerGB": 0.19 },
+        "io1": { "pricePerGB": 0.238, "pricePerIOPS": 0.124 },
+        "io2": { "pricePerGB": 0.238, "pricePerIOPS": 0.124 },
+        "st1": { "pricePerGB": 0.086 },
+        "sc1": { "pricePerGB": 0.029 }
+      },
+      "snapshots": { "pricePerGB": 0.068 }
+    }
+  },
   "volumeTypes": {
     "gp3": {
       "name": "General Purpose SSD (gp3)",

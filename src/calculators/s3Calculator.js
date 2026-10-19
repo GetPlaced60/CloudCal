@@ -34,19 +34,28 @@ export function calculateS3Cost(config, region = 'us-east-1') {
     storageCost = gb * rate;
   }
 
-  const requestPricing = pricing.requests[storageClass] || pricing.requests.standard;
+  const reqPricing = pricing.regionalRequests?.[targetRegion]?.[storageClass]
+    || pricing.requests[storageClass]
+    || pricing.requests.standard;
+
   // putRequests and getRequests are input in thousands
-  const putCost = (putRequests || 0) * requestPricing.put;
-  const getCost = (getRequests || 0) * requestPricing.get;
+  const putCost = (putRequests || 0) * reqPricing.put;
+  const getCost = (getRequests || 0) * reqPricing.get;
 
   let dtCost = 0;
   const freeTier = pricing.dataTransferOut.freeTierGB ?? 100;
+  const regionalEgressRate = pricing.regionalEgress?.[targetRegion] ?? pricing.dataTransferOut.first10TB;
+
   if ((dataTransferOutGB || 0) > freeTier) {
     const billable = dataTransferOutGB - freeTier;
-    if (billable <= 10240) {
-      dtCost = billable * pricing.dataTransferOut.first10TB;
+    if (targetRegion === 'us-east-1' || targetRegion === 'us-east-2' || targetRegion === 'us-west-2') {
+      if (billable <= 10240) {
+        dtCost = billable * pricing.dataTransferOut.first10TB;
+      } else {
+        dtCost = 10240 * pricing.dataTransferOut.first10TB + (billable - 10240) * pricing.dataTransferOut.next40TB;
+      }
     } else {
-      dtCost = 10240 * pricing.dataTransferOut.first10TB + (billable - 10240) * pricing.dataTransferOut.next40TB;
+      dtCost = billable * regionalEgressRate;
     }
   }
 
@@ -59,6 +68,7 @@ export function calculateS3Cost(config, region = 'us-east-1') {
       putRequests: Math.round(putCost * 100) / 100,
       getRequests: Math.round(getCost * 100) / 100,
       dataTransfer: Math.round(dtCost * 100) / 100
-    }
+    },
+    region: targetRegion
   };
 }
